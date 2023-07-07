@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Quote;
+use App\Http\Resources\QuoteResource;
+
 
 class QuoteController extends Controller
 {
@@ -25,9 +28,9 @@ class QuoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Quote $quote)
     {
-        //
+        return new QuoteResource($quote);
     }
 
     /**

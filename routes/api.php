@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Quote;
+use App\Http\Controllers\QuoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +24,25 @@ Route::get('/posts', function () {
     $data = ['message' => 'Hello World'];
     return response()->json($data);
 });
+
+// Not Good Practice
+
+// 01
+// Route::get('/quote/{id}', function ($id) {
+//     $quote = Quote::find($id);
+//     if ($quote) {
+//         return response()->json($quote);
+//     } else {
+//         return response()->json(['message' => 'Quote not found'], 404);
+//     }
+// });
+
+// 02
+// Route::get('/quote/{id}', [QuoteController::class, 'show']);
+
+// 03
+// Route::resource('quote', QuoteController::class);
+
+// Best Practice
+
+Route::apiResource('/quote', QuoteController::class);
