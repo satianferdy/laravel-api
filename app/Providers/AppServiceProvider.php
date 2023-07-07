@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // withoutWrapping() method will remove the data key from the response
+        JsonResource::withoutWrapping();
     }
 }
