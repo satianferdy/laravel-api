@@ -22,7 +22,7 @@ class QuoteStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'author' => 'required|string|max:10',
+            'author' => 'required|string|min:10|unique:quotes',
             'text' => 'required|string|min:10',
         ];
     }
