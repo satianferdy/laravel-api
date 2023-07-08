@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QuoteStoreRequest;
+use App\Http\Requests\QuoteUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\Quote;
 use App\Http\Resources\QuoteResource;
@@ -39,28 +40,14 @@ class QuoteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(QuoteUpdateRequest $request, Quote $quote)
     {
-        //validate
-        $validated = $request->validate([
-            'quote' => 'required|string|min:10',
-            'author' => 'required|string|min:10',
-        ]);
-        // if validate success update
-        if($validated){
-            $quote = Quote::find($id);
-            // if data found
-            if ($quote) {
-                $quote->update($validated);
-                return response()->json($quote);
-                // if data not found
-            } else {
-                return response()->json(['message' => 'Quote not found'], 404);
-            }
-        }
+        // update data
+        $quote->update($request->validated());
+        return new QuoteResource($quote);
 
-
-
+        // lebih simple dengan tab
+        // return new QuoteResource(tap($quote)->update($request->validated()));
     }
 
     /**
