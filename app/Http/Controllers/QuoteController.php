@@ -39,9 +39,28 @@ class QuoteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        //validate
+        $validated = $request->validate([
+            'quote' => 'required|string|min:10',
+            'author' => 'required|string|min:10',
+        ]);
+        // if validate success update
+        if($validated){
+            $quote = Quote::find($id);
+            // if data found
+            if ($quote) {
+                $quote->update($validated);
+                return response()->json($quote);
+                // if data not found
+            } else {
+                return response()->json(['message' => 'Quote not found'], 404);
+            }
+        }
+
+
+
     }
 
     /**

@@ -45,4 +45,8 @@ Route::get('/posts', function () {
 
 // Best Practice
 
-Route::apiResource('/quote', QuoteController::class);
+// Route::apiResource('/quote', QuoteController::class);
+
+// route updae yang kurang
+
+Route::put('/quoteUpdate/{id}', [QuoteController::class, 'update']);
