@@ -2,6 +2,7 @@
 
 use App\Models\Quote;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\Api\ApiAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,37 +17,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::get('/posts', function () {
     $data = ['message' => 'Hello World'];
     return response()->json($data);
 });
 
-// Not Good Practice
 
-// 01
-// Route::get('/quote/{id}', function ($id) {
-//     $quote = Quote::find($id);
-//     if ($quote) {
-//         return response()->json($quote);
-//     } else {
-//         return response()->json(['message' => 'Quote not found'], 404);
-//     }
-// });
+// route midleware for authentikasi user
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('/quote', QuoteController::class);
+    Route::get('/logout', [ApiAuthController::class, 'logout']);
+});
 
-// 02
-// Route::get('/quote/{id}', [QuoteController::class, 'show']);
+Route::post('/register', [ApiAuthController::class, 'register']);
+Route::post('/login', [ApiAuthController::class, 'login']);
 
-// 03
-// Route::resource('quote', QuoteController::class);
-
-// Best Practice
-
-Route::apiResource('/quote', QuoteController::class);
-
-// route updae yang kurang
-
-// Route::put('/quoteUpdate/{id}', [QuoteController::class, 'update']);
