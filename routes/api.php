@@ -30,7 +30,7 @@ Route::get('/posts', function () {
 // route midleware for authentikasi user
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/quote', QuoteController::class);
-    Route::get('/logout', [ApiAuthController::class, 'logout']);
+    Route::post('/logout', [ApiAuthController::class, 'logout']);
 });
 
 Route::post('/register', [ApiAuthController::class, 'register']);
