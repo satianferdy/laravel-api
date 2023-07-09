@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AuthLoginRequest;
+use App\Http\Resources\LoginResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,14 +12,9 @@ use Illuminate\Support\Facades\Hash;
 class ApiAuthController extends Controller
 {
     //login
-    public function login(Request $request)
+    public function login(AuthLoginRequest $request)
     {
         // request validation
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
         // check if user exist
         $user = User::where('email', $request->email)->first();
 
@@ -32,11 +29,10 @@ class ApiAuthController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         // return response
-        return response()->json([
-            // 'message' => 'success',
-            // 'user' => $user,
+        return new LoginResource([
+            'user' => $user,
             'token' => $token
-        ], 200);
+        ]);
     }
 
     // register
