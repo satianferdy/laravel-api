@@ -5,34 +5,50 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Resources\LoginResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class ApiAuthController extends Controller
 {
     //login
     public function login(AuthLoginRequest $request)
     {
-        // request validation
-        // check if user exist
-        $user = User::where('email', $request->email)->first();
-
-        // check password
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        //validate with Auth::attempt
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            // if success, create token
+            $user = User::where('email', $request->email)->first();
+            $token = $user->createToken('token')->plainTextToken;
+            return new LoginResource([
+                'user' => $user,
+                'token' => $token
+            ]);
+        } else {
+            //if failed, return error
             return response()->json([
                 'message' => ['These credentials do not match our records.']
             ], 404);
         }
 
-        // create token
-        $token = $user->createToken('token')->plainTextToken;
 
-        // return response
-        return new LoginResource([
-            'user' => $user,
-            'token' => $token
-        ]);
+        // $user = User::where('email', $request->email)->first();
+
+        // // check password
+        // if (!$user || !Hash::check($request->password, $user->password)) {
+        //     return response()->json([
+        //         'message' => ['These credentials do not match our records.']
+        //     ], 404);
+        // }
+
+        // // create token
+        // $token = $user->createToken('token')->plainTextToken;
+
+        // // return response
+        // return new LoginResource([
+        //     'user' => $user,
+        //     'token' => $token
+        // ]);
     }
 
     // register
